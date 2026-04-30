@@ -16,6 +16,8 @@ public class PlayerController : MonoBehaviour
     private bool isGrounded;
     private float moveInput;
 
+    float score;
+
     // 아이템 상태 및 원래 능력치 저장 변수
     private bool isGiant = false;
     private bool isInvincible = false;
@@ -27,6 +29,7 @@ public class PlayerController : MonoBehaviour
         rb = GetComponent<Rigidbody2D>();
         pAni = GetComponent<Animator>();
         spriteRenderer = GetComponent<SpriteRenderer>(); // Awake에서 미리 가져오기
+        score = 0f;
 
         originalSpeed = moveSpeed;
         originalJumpForce = jumpForce;
@@ -83,6 +86,7 @@ public class PlayerController : MonoBehaviour
 
         if (collision.CompareTag("Finish"))
         {
+            HighScore.TrySet(SceneManager.GetActiveScene().buildIndex, (int)score);
             collision.GetComponent<LevelObject>().MoveToNextLevel();
         }
 
@@ -118,6 +122,7 @@ public class PlayerController : MonoBehaviour
             CancelInvoke(nameof(ResetGiant));
             Invoke(nameof(ResetGiant), 6f);
             Destroy(collision.gameObject);
+            score += 10f;
         }
 
         if (collision.CompareTag("Speeditem"))
@@ -127,6 +132,7 @@ public class PlayerController : MonoBehaviour
             Invoke(nameof(ResetSpeed), 3f);
             Destroy(collision.gameObject);
             pAni.speed = 2f;
+            score += 10f;
         }
 
         if (collision.CompareTag("Jumpitem"))
@@ -135,6 +141,7 @@ public class PlayerController : MonoBehaviour
             CancelInvoke(nameof(ResetJump));
             Invoke(nameof(ResetJump), 5f);
             Destroy(collision.gameObject);
+            score += 10f;
         }
 
         if (collision.CompareTag("Staritem"))
@@ -144,6 +151,7 @@ public class PlayerController : MonoBehaviour
             CancelInvoke(nameof(ResetInvincible));
             Invoke(nameof(ResetInvincible), 5f);
             Destroy(collision.gameObject);
+            score += 10f;
         }
     }
 
